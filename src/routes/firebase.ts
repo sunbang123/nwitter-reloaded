@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAvaBuQHq-WZRaB8tO1TSkvPr5oz4T5K5Q",
+  apiKey: import.meta.env.VITE_TOKEN,
   authDomain: "stickers-9f4a7.firebaseapp.com",
   projectId: "stickers-9f4a7",
   storageBucket: "stickers-9f4a7.appspot.com",

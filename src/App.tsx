@@ -3,7 +3,7 @@ import { createGlobalStyle, styled } from "styled-components";
 import reset from "styled-reset";
 import { useEffect, useState } from "react";
 import LoadingScreen from "./components/loading-screen";
-import { auth } from "./routes/firebase";
+import { auth } from "./firebase";
 import { RouterInfo } from "./routes/router";
 
 const router = createBrowserRouter(RouterInfo)

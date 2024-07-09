@@ -4,9 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import {
+    Container,
     Error,
     Form,
     Input,
+    SubTitle,
     Switcher,
     Title,
     Wrapper,
@@ -48,32 +50,35 @@ export default function CreateAccount() {
 
     return (
         <Wrapper>
-            <Title>Log in to Stickers</Title>
-            <Form onSubmit={onSubmit}>
-                <Input
-                    onChange={onChange}
-                    name="email"
-                    value={email}
-                    placeholder="Email"
-                    type="email"
-                    required
-                />
-                <Input
-                    onChange={onChange}
-                    value={password}
-                    name="password"
-                    placeholder="Password"
-                    type="password"
-                    required
-                />
-                <Input type="submit" value={isLoading ? "Loading..." : "Log in"} />
-            </Form>
-            {error !== "" ? <Error>{error}</Error> : null}
-            <Switcher>
-                Don't have an account?{" "}
-                <Link to="/create-account">Create one &rarr;</Link>
-            </Switcher>
-            <GithubButton/>
+            <Container>
+                <Title>Stickers</Title>
+                <SubTitle>친구들이 당신을 기다립니다 ;)</SubTitle>
+                <Form onSubmit={onSubmit}>
+                    <Input
+                        onChange={onChange}
+                        name="email"
+                        value={email}
+                        placeholder="Email"
+                        type="email"
+                        required
+                    />
+                    <Input
+                        onChange={onChange}
+                        value={password}
+                        name="password"
+                        placeholder="Password"
+                        type="password"
+                        required
+                    />
+                    <Input type="submit" value={isLoading ? "Loading..." : "Log in"} />
+                </Form>
+                {error !== "" ? <Error>{error}</Error> : null}
+                <Switcher>
+                    Don't have an account?{" "}
+                    <Link to="/create-account">Create one &rarr;</Link>
+                </Switcher>
+                <GithubButton/>
+            </Container>
         </Wrapper>
     );
 }

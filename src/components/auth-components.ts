@@ -6,11 +6,17 @@ export const Wrapper = styled.div`
     flex-direction: column;
     align-items: center;
     width: 420px;
-    padding: 50px 0px;
+    padding: 10vh 0px;
 `;
 
 export const Title = styled.h1`
+    font-weight: bold;
     font-size: 42px;
+`;
+
+export const SubTitle = styled.h3`
+    margin-top: 1em;
+    font-size: 25px;
 `;
 
 export const Form = styled.form`
@@ -49,4 +55,9 @@ export const Switcher = styled.span`
 `;
 
 
+export const Container = styled.div`
+    background-color: #FFCD29;
+    width: 60vw;
+    padding: 10vw;
+`;
 

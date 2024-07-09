@@ -10,6 +10,7 @@ import {
     Switcher,
     Title,
     Wrapper,
+    Container,
 } from "../components/auth-components";
 import GithubButton from "../components/github-btn";
 
@@ -61,42 +62,44 @@ export default function CreateAccount(){
 
     return (
         <Wrapper>
-            <Title>Join Stickers</Title>
-            <Form onSubmit={onSubmit}>
-                <Input
-                    onChange={onChange}
-                    name="name"
-                    value={name}
-                    placeholder="Name"
-                    type="text"
-                    required
-                />
-                <Input
-                    onChange={onChange}
-                    name="email"
-                    value={email}
-                    placeholder="Email" 
-                    type="email" 
-                    required
-                />
-                <Input
-                    onChange={onChange}
-                    name="password"
-                    value={password}
-                    placeholder="Password"
-                    type="password"
-                    required
-                />
-                <Input
-                    type="submit"
-                    value={isLoading ? "Loading..." : "Create Account"}
-                />
-            </Form>
-            {error !== "" ? <Error>{error}</Error> : null}
-            <Switcher>
-                Already have an account? <Link to="/login">Log in &rarr;</Link>
-            </Switcher>
-            <GithubButton />
+            <Container>
+                <Title>회원가입</Title>
+                <Form onSubmit={onSubmit}>
+                    <Input
+                        onChange={onChange}
+                        name="name"
+                        value={name}
+                        placeholder="Name"
+                        type="text"
+                        required
+                    />
+                    <Input
+                        onChange={onChange}
+                        name="email"
+                        value={email}
+                        placeholder="Email" 
+                        type="email" 
+                        required
+                    />
+                    <Input
+                        onChange={onChange}
+                        name="password"
+                        value={password}
+                        placeholder="Password"
+                        type="password"
+                        required
+                    />
+                    <Input
+                        type="submit"
+                        value={isLoading ? "Loading..." : "Create Account"}
+                    />
+                </Form>
+                {error !== "" ? <Error>{error}</Error> : null}
+                <Switcher>
+                    Already have an account? <Link to="/login">Log in &rarr;</Link>
+                </Switcher>
+                <GithubButton />
+            </Container>
         </Wrapper>
     );
 }

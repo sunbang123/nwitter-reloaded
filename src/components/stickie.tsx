@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 import { IStickie } from "./timeline";
 import { auth, db, storage } from "../firebase";
-import { deleteDoc, doc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 
 
@@ -47,6 +47,19 @@ const DeleteButton = styled.button`
     cursor: pointer;
 `;
 
+const EditButton = styled.button`
+    background-color: green;
+    color:white;
+    font-weight: 600;
+    border: 0;
+    font-size: 12px;
+    padding: 5px 10px;
+    text-transform: uppercase;
+    border-radius: 5px;
+    cursor: pointer;
+`;
+
+
 export default function Stickie({ username, photo, stickie, userId, id }: IStickie) {
     const user = auth.currentUser;
     const onDelete = async () => {
@@ -65,13 +78,29 @@ export default function Stickie({ username, photo, stickie, userId, id }: IStick
         }
     };
 
+    const onEdit = async () => {
+        const ok = confirm("Are you sure you want to edit this stickie?");
+        if (!ok || user?.uid !== userId) return;
+        const newContent = prompt("Enter the new content for the stickie:");
+        if (!newContent) return;
+        try {
+            await updateDoc(doc(db, "stickies", id), { 
+                stickie: newContent
+             });
+        } catch (e) {
+            console.log(e);
+        } finally {
+
+        }
+    };
+    
     return (
         <Wrapper>
             <Column>
                 <Username>{username}</Username>
                 <Payload>{stickie}</Payload>
                 {user?.uid == userId? (
-                    <DeleteButton onClick={onDelete}>Delete</DeleteButton>
+                    <><DeleteButton onClick={onDelete}>Delete</DeleteButton><EditButton onClick={onEdit}>Edit</EditButton></>
                 ) : null}
             </Column>
             <Column>{photo ? <Photo src={photo}/> : null}</Column>

@@ -13,19 +13,19 @@ const Wrapper = styled.div`
     border-radius: 15px;
 `;
 
-const Form = styled.form<{ show: String }>`
-    display: ${props => props.show ? 'flex' : 'none'};
+const Form = styled.form`
     flex-direction: column;
     gap: 10px;
 `;
 
-const TextArea = styled.textarea`
-    border: 2px solid ;
-    padding: 20px;
-    margin-top:20px;
+const TextArea = styled.textarea<{ show: String }>`
+    display: ${props => props.show ? 'flex' : 'none'};
+    margin: 10px 0px;
+    border: 2px solid transparent;
+    border-radius: 10px;
     font-size: 16px;
     color: black;
-    background-color: white;
+    background-color: transparent;
     width: 100%;
     resize: none;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -62,7 +62,7 @@ const Payload = styled.p<{ show: String }>`
 `;
 
 const DeleteButton = styled.button<{ show: String }>`
-    display: ${props => props.show ? 'flex' : 'none'};
+    display: ${props => props.show ? 'inline-block' : 'none'};
     background-color: tomato;
     color:white;
     font-weight: 600;
@@ -72,11 +72,15 @@ const DeleteButton = styled.button<{ show: String }>`
     text-transform: uppercase;
     border-radius: 5px;
     cursor: pointer;
+    &:hover,
+    &:active {
+        opacity: 0.9;
+    }
 `;
 
-const EditButton = styled.button`
-    background-color: green;
-    color:white;
+const EditButton = styled.input<{ show: String, active: String }>`
+    background-color: ${props => props.show ? 'green' : (props.active ? "dimgray" : "green")};
+    color: white;
     font-weight: 600;
     border: 0;
     font-size: 12px;
@@ -84,13 +88,22 @@ const EditButton = styled.button`
     text-transform: uppercase;
     border-radius: 5px;
     cursor: pointer;
+    &:hover,
+    &:active {
+        opacity: 0.9;
+    }
 `;
-
 
 export default function Stickie({ username, photo, stickie, userId, id }: IStickie) {
     const user = auth.currentUser;
     const [isEditing, setIsEditing] = useState(false);
-    
+    const [isLoading, setLoading] = useState(false);
+    const [editStickie, setEditStickie] = useState("");
+
+    const onChange = (e:React.ChangeEvent<HTMLTextAreaElement>) => {
+        setEditStickie(e.target.value);
+    };
+
     const onDelete = async () => {
         const ok = confirm("Are you sure you want to delete this stickie?");
         if(!ok || user?.uid !== userId) return;
@@ -111,6 +124,24 @@ export default function Stickie({ username, photo, stickie, userId, id }: IStick
         setIsEditing(prev => !prev);
     };
     
+    const onSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        const ok = confirm("Are you sure you want to edit this stickie?");
+        if (isLoading || !ok || user?.uid !== userId) return;
+        try {
+            setLoading(true);
+            await updateDoc(doc(db, "stickies", id), { 
+                stickie: editStickie
+            });
+            setEditStickie("");
+        } catch (e) {
+            console.log(e);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <Wrapper>
             <Column>
@@ -118,17 +149,29 @@ export default function Stickie({ username, photo, stickie, userId, id }: IStick
                 <Payload show={isEditing ? "" : "show"}>{stickie}</Payload>
                 {user?.uid == userId? (
                     <>
-                        <DeleteButton show={isEditing ? "" : "show"} onClick={onDelete}>Delete</DeleteButton>
-                        <EditButton onClick={onEdit}>Edit</EditButton>
-                        <Form show={isEditing ? "show" : ""}>
+                        <Form 
+                            onSubmit={onSubmit}
+                            >
                             <TextArea 
+                                show={isEditing ? "show" : ""}
                                 required
                                 rows={5}
                                 maxLength={180}
-                                // onChange={onChange}
-                                // value={stickie}
-                                placeholder="What is happening?!"
+                                onChange={onChange}
+                                value={editStickie}
+                                placeholder={stickie}
                             />
+                            <EditButton
+                                show={isEditing ? "" : "show"}
+                                active={editStickie ? "" : "active"}
+                                onClick={onEdit} type="submit"
+                                value={isEditing ? (editStickie ? (isLoading ? "editing..." : "submit") : "cancel") : "edit"}
+                            />
+                            <DeleteButton
+                                show={isEditing ? "" : "show"}
+                                onClick={onDelete}>
+                                Delete
+                            </DeleteButton>
                         </Form>
                     </>
                 ) : null}

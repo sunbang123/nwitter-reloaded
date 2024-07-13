@@ -7,7 +7,7 @@ import { Unsubscribe } from "firebase/auth";
 
 export interface IStickie {
     id: string;
-    photo: string;
+    photo?: string;
     stickie: string;
     userId: string;
     username: string;

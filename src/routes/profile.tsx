@@ -1,8 +1,18 @@
 import { styled } from "styled-components";
-import { auth, storage } from "../firebase";
-import { useState } from "react";
+import { auth, db, storage } from "../firebase";
+import { useEffect, useState } from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { updateProfile } from "firebase/auth";
+import {
+    collection,
+    getDocs,
+    limit,
+    orderBy,
+    query,
+    where,
+  } from "firebase/firestore";
+import { IStickie } from "../components/timeline";
+import Stickie from "../components/stickie";
 
 const Wrapper = styled.div`
     display: flex;
@@ -37,10 +47,16 @@ const AvatarInput = styled.input`
 const Name = styled.span`
     font-size: 22px;
 `;
-
+const Stickies = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 10px;
+`;
 export default function Profile() {
     const user = auth.currentUser;
     const [avatar, setAvatar] = useState(user?.photoURL); // 옵셔널 체이닝 문법으로 null이거나 undefined인 경우에도 오류를 발생시키지 않고 undefined를 반환함.
+    const [stickies, setStickies] = useState<IStickie[]>([]);
     const onAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const { files } = e.target;
         if (!user) return;
@@ -55,6 +71,31 @@ export default function Profile() {
             });
         }
     };
+    const fetchStickies = async () => {
+        const stickieQuery = query(
+          collection(db, "stickies"),
+          where("userId", "==", user?.uid),
+          orderBy("createdAt", "desc"),
+          limit(25)
+        );
+        const snapshot = await getDocs(stickieQuery);
+        const stickies = snapshot.docs.map((doc) => {
+          const { stickie, createdAt, userId, username, photo } = doc.data();
+          return {
+            stickie,
+            createdAt,
+            userId,
+            username,
+            photo,
+            id: doc.id,
+          };
+        });
+        setStickies(stickies);
+      };
+      useEffect(() => {
+        fetchStickies();
+      }, []);
+
     return (
         <Wrapper>
             <AvatarUpload htmlFor = "avatar">
@@ -73,6 +114,11 @@ export default function Profile() {
                 accept="image/*"
             />
             <Name>{user?.displayName ?? "Anonymous"}</Name>
+            <Stickies>
+                {stickies.map((stickie) => (
+                    <Stickie key={stickie.id} {...stickie} />
+                ))}
+            </Stickies>
         </Wrapper>
     );
 }

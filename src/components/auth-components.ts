@@ -58,6 +58,7 @@ export const Switcher = styled.span`
 export const Container = styled.div`
     background-color: #FFCD29;
     width: 60vw;
-    padding: 10vw;
+    padding: 10vw 6vw;
+    display:flex;
 `;
 

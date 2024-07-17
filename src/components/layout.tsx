@@ -10,6 +10,7 @@ const Wrapper = styled.div`
     padding: 50px 0px;
     width: 100%;
     max-width: 860px;
+    background-color: white;
 `;
 
 const Menu = styled.div`
@@ -17,6 +18,9 @@ const Menu = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    background: beige;
+    padding-top: 3em;
+    margin: 0 2em;
 `;
 
 const MenuItem = styled.div`
@@ -24,18 +28,18 @@ const MenuItem = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid white;
+    border: 2px solid #FFCD29;
     height: 50px;
     width: 50px;
     border-radius: 50%;
     svg {
         width: 30px;
-        fill: white;
+        fill: #FFCD29;
     }
     &.log-out {
-        border-color: white;
+        border-color: #FFCD29;
         svg {
-            fill: white;
+            fill: #FFCD29;
         }
     }
 `;

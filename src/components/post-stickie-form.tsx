@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { styled } from "styled-components";
 import { auth, db, storage } from "../firebase";
-import { addDoc, collection, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const FormContainer = styled.div`
@@ -13,6 +13,9 @@ const Form = styled.form`
     display: flex;
     flex-direction: column;
     gap: 10px;
+`;
+
+const Modal = styled.div`
 `;
 
 const TextArea = styled.textarea`
@@ -70,16 +73,26 @@ export default function PostStickieForm() {
     const onChange = (e:React.ChangeEvent<HTMLTextAreaElement>) => {
         setStickie(e.target.value);
     };
-    const onFileChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { files } = e.target;
         if (files && files.length === 1) {
-            setFile(files[0]);
+            const selectedFile = files[0];
+            if (selectedFile.size > 2 * 1024 * 1024) {
+                alert("File size must be less than 2MB");
+                return;
+            }
+            setFile(selectedFile);
         }
     };
-    const onSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
+    
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const user = auth.currentUser;
-        if(!user || isLoading || stickie === "" || stickie.length > 180) return;
+        if (!user) {
+            alert("You must be logged in to post a stickie.");
+            return;
+        }
+        if (isLoading || stickie === "" || stickie.length > 180) return;
         try {
             setLoading(true);
             const doc = await addDoc(collection(db, "stickies"), {
@@ -99,36 +112,45 @@ export default function PostStickieForm() {
             setStickie("");
             setFile(null);
         } catch (e) {
-            console.log(e);
+            console.error("Error uploading stickie:", e);
+            alert("Error uploading stickie. Please try again.");
         } finally {
             setLoading(false);
         }
-    }
+    };
+
     return (
-        <FormContainer>
-            <Form onSubmit={onSubmit}>
-                <TextArea 
-                    required
-                    rows={5}
-                    maxLength={180}
-                    onChange={onChange}
-                    value={stickie}
-                    placeholder="What is happening?!"
-                />
-                <AttachFileButton htmlFor="file">
-                    {file?"Photo added ✅":"Add photo"}
-                </AttachFileButton>
-                <AttachFileInput
-                    onChange={onFileChange}
-                    type="file"
-                    id="file"
-                    accept="image/*"
-                />
-                <SubmitBtn
-                    type="submit"
-                    value={isLoading ? "Posting..." : "Post Stickie"}
-                />
-            </Form>
-        </FormContainer>
+        <Modal className="modal fade" id="exampleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div className="modal-dialog">
+                <div className="modal-content">
+                    <FormContainer>
+                        <Form onSubmit={onSubmit}>
+                            <TextArea 
+                                required
+                                rows={5}
+                                maxLength={180}
+                                onChange={onChange}
+                                value={stickie}
+                                placeholder="What is happening?!"
+                            />
+                            <AttachFileButton htmlFor="file">
+                                {file?"Photo added ✅":"Add photo"}
+                            </AttachFileButton>
+                            <AttachFileInput
+                                onChange={onFileChange}
+                                type="file"
+                                id="file"
+                                accept="image/*"
+                            />
+                            <SubmitBtn
+                                type="submit"
+                                value={isLoading ? "Posting..." : "Post Stickie"}
+                                data-bs-dismiss="modal"
+                            />
+                        </Form>
+                    </FormContainer>
+                </div>
+            </div>
+        </Modal>
     );
 }

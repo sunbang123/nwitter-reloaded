@@ -90,6 +90,7 @@ export default function CreateAccount(){
                         required
                     />
                     <Input
+                        className="btn btn-success"
                         type="submit"
                         value={isLoading ? "Loading..." : "Create Account"}
                     />

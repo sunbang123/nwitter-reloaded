@@ -5,7 +5,6 @@ export const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 420px;
     padding: 10vh 0px;
 `;
 
@@ -54,11 +53,8 @@ export const Switcher = styled.span`
     }
 `;
 
-
 export const Container = styled.div`
     background-color: #FFCD29;
-    width: 60vw;
+    width: 60vmax;
     padding: 10vw 6vw;
-    display:flex;
 `;
-

@@ -17,8 +17,8 @@ import GithubButton from "../components/github-btn";
 import { styled } from "styled-components";
 
 const Div = styled.div`
-    padding: 0 3em;
 `;
+
 const Img = styled.img`
     width: 10em;
     margin-bottom:3em;
@@ -59,13 +59,13 @@ export default function CreateAccount() {
 
     return (
         <Wrapper>
-            <Container>
-                <Div>
+            <Container className="row">
+                <Div className="col-lg-6">
                     <Img src="logo.png"/>
                     <Title>Stickers</Title>
                     <SubTitle>친구들이 당신을 기다립니다 ;)</SubTitle>
                 </Div>
-                <Div>
+                <Div className="col-lg-6">
                     <Form onSubmit={onSubmit}>
                         <Input
                             onChange={onChange}

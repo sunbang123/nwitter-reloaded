@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { styled } from "styled-components";
 import { auth, db, storage } from "../firebase";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const FormContainer = styled.div`

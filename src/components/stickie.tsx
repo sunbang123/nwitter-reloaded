@@ -145,7 +145,7 @@ export default function Stickie({ username, photo, stickie, userId, id }: IStick
     }
 
     return (
-        <Wrapper>
+        <Wrapper className="mt-4">
             <Column>
                 <Username>{username}</Username>
                 <Payload show={isEditing ? "" : "show"}>{stickie}</Payload>

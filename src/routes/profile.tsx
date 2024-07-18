@@ -97,7 +97,7 @@ export default function Profile() {
       }, []);
 
     return (
-        <Wrapper>
+        <Wrapper className="mt-4">
             <AvatarUpload htmlFor = "avatar">
                 {avatar ? (
                     <AvatarImg src = {avatar} />
